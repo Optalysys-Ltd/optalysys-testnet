@@ -1,39 +1,40 @@
 # User Instructions for Optalysys Testnet
 
-## Quickstart
+## Quick Guide
 
 > If you already familiar with interacting with Ethereum blockchains using the JSON RPC API, writing smart contracts in Solidity and writing javascript or typescript you can get started with the below. Otherwise see the [detailed guide](#detailed-guide).
 
 1. Generate an Ethereum compatible private key.
 2. Give Optalysys the address derived from your private key and request testnet Eth to be allocated.
-3. Request the JSON RPC URL, relayer URL, gateway chain ID, ACL contract address, FHEVM executor contract address, KMS verifier contract address, decryption oracle contract address, input verifier contract address, input verification contract address and decryption contract address from Optalysys. These can be found in the file `testnet_config.json` or `testnet_blue.json` within this repo.
+3. Request the JSON RPC URL, relayer URL, gateway chain ID, ACL contract address, FHEVM executor contract address, KMS verifier contract address, decryption oracle contract address, input verifier contract address, input verification contract address and decryption contract address from Optalysys.
 4. Write an FHE smart contract using [Zama's Solidity docs](https://docs.zama.ai/protocol/solidity-guides/smart-contract/configure) (but with **config explicitly set to use the addresses provided by Optalysys, not Zama's config for Sepolia** - as the addresses are of course different). Use [Zama's Solidity library](https://www.npmjs.com/package/@fhevm/solidity) at version v0.8.0 (other versions may work, but currently the server side of Optalysys' testnet uses versions of Zama's stack known to be compatible with v0.8.0).
-4. Deploy your smart contract using your method of choice through the JSON RPC URL provided by Optalysys in step 3 using you private key that was funded in step 2 to sign the transaction. See the [Ethereum documentation on deploying smart contracts](https://ethereum.org/developers/docs/smart-contracts/deploying/) if you don't know how to do this.
-5. Interact with your contract using your method of choice and create encrypted inputs to send to it / request decryptions using [Zama's relayer SDK](https://www.npmjs.com/package/@zama-fhe/relayer-sdk) at version v0.2.0 (other versions may work, but the current version of Zama's relayer run on Optalysys' testnet is known to be compatible with v0.2.0) - using the details provided by Optalysys in step 3 to initialise the relayer SDK.
+5. Deploy your smart contract using your method of choice through the JSON RPC URL provided by Optalysys in step 3 using you private key that was funded in step 2 to sign the transaction. See the [Ethereum documentation on deploying smart contracts](https://ethereum.org/developers/docs/smart-contracts/deploying/) if you don't know how to do this.
+6. Interact with your contract using your method of choice and create encrypted inputs to send to it / request decryptions using [Zama's relayer SDK](https://www.npmjs.com/package/@zama-fhe/relayer-sdk) at version v0.2.0 (other versions may work, but the current version of Zama's relayer run on Optalysys' testnet is known to be compatible with v0.2.0) - using the details provided by Optalysys in step 3 to initialise the relayer SDK.
 
 ## Detailed Guide
 
 > All commands in this guide assume you are running them from the directory in which this guide exists on your machine.
-
 ### Pre-requisites
 
-> This guide uses [pnpm](https://pnpm.io/installation). If you already have this installed on your machine or know how to run a container with them installed you can skip this section.
+#### `pnpm` package manager
 
+This guide uses [pnpm](https://pnpm.io/installation). If you already have this installed on your machine or know how to run a container with them installed you can skip this section.
+
+#### Docker
 It is recommended to run this guide in a container, to avoid the [it works on my machine issue](https://expertbeacon.com/the-works-on-my-machine-problem-causes-solutions-and-lessons-from-google/).
 
-> This guide uses Docker, but you can use another container management tool if you wish (e.g. podman).
+> This guide uses Docker, but you can use another container management tool if you wish (e.g. podman). If you choose to use Docker, follow the instructions for [installing Docker on your machine](https://docs.docker.com/engine/install/). Alternatively, you may install `pnpm` directly on your machine.
 
-Follow the instructions for [installing Docker on your machine](https://docs.docker.com/engine/install/). Alternatively, install pnpm directly on your machine.
-
-
-#### Dockerfile
-
-The Dockerfile contains instructions to build a Ubuntu Docker container with node and pnpm.
+The folder contains a `Dockerfile` containing instructions to build a Ubuntu Docker container with `node` and `pnpm`.
 
 > If your company uses a proxy, you will need to [add their CA certificates to the Dockerfile](https://docs.docker.com/engine/network/ca-certs/#add-ca-certificates-to-linux-images-and-containers) to ensure commands like `apt` and `pnpm install` work. The commented-out sections in the `Dockerfile` have an example of this.
+### Running Docker
 
-After you have Docker installed you can start an Ubuntu container with this Docker command. This builds the Dockerfile and tags it `testnet-pnpm-ubuntu`, and then runs the Docker container.
-
+After Docker has been installed, you can start an Ubuntu container by typing the following.
+```bash
+./start.sh
+```
+This runs the command below, building the `Dockerfile` and tags it `testnet-pnpm-ubuntu`, and then running the Docker container.
 ```bash
 docker build -t testnet-pnpm-ubuntu . && docker run --hostname testnet-pnpm-ubuntu -it --rm -v .:/home/node/guide --workdir /home/node/guide testnet-pnpm-ubuntu bash
 ```
@@ -43,10 +44,10 @@ The following commands will be run inside the Docker container. Make sure the sh
 ### Install Dependencies
 
 Install the dependencies for the code used in this guide
-
 ```bash
 pnpm install
 ```
+> If you're interested only in simply evaluating the performance of either testnet, you may skip the rest of this section and go directly to [[#The `quickStart` task a simple way to interact with Optalysys testnets]].
 
 ### Generate an Ethereum Compatible Private Key
 
@@ -178,6 +179,56 @@ Now that a reference to the resultant (sum) ciphertext is stored on the blockcha
 pnpm hardhat task:publicDecryptionOfSum --config-file testnet_config.json --address-file test_contract.address
 ```
 
+## The `quickStart` task: a  simple way to interact with Optalysys testnets
+The following command allows you to easily interact with the testnets with the `Simple.sol` smart contract. To run this command, it is assumed that you have already [[BB -- User Instructions#Install Dependencies]].
+
+```bash
+pnpm hardhat quickStart
+```
+
+The previous command will prompt you to provide the name of your key file. It will search in the `keys` directory for existing keys.
+
+```bash
+node@testnet-pnpm-ubuntu:~/guide$ pnpm hardhat quickStart
+What is the name of your key file? (key1.json / key2.json). 
+If you want to generate a new key, type the name of the output file. 
+(Press tab to autocomplete)
+: key1.json
+```
+
+After entering the name (e.g. `key1.json`) , it will ask you whether you want to *set* (temporarily) your wallet password, which, if you choose to do so, will skip the password prompt every time you run a command.
+
+```bash
+The name of your key file is key.json, the path of your key file is keys/key1.json
+Environment variable WALLET_PASSWORD has not been set
+Do you want to set WALLET_PASSWORD env var to skip the password prompt? (y / n): y
+Enter password for wallet: 
+```
+
+You will then be asked to choose the network on which you would like to deploy your smart contract. 
+
+```bash
+Which testnet network would you like to use? (dev / blue): blue
+```
+
+This will request your current balance for your chosen key in the selected network. After this, it will search in the `contract_addresses` directory for contracts that have already been  deployed.
+
+```bash 
+log-time :: Already deployed contracts in ./contract_addresses: c1.address, c2.address
+Do you want to deploy a new instance of the contract? (y / n): n
+What is the filename to load/save the deployed contract address? (e.g. file_name.address): c2.address
+The name of your contract address file is c2.address, the path of your contract address file is contract_addresses/c2.address
+```
+
+It will then prompt you to provide inputs  for a homomorphic addition. 
+
+```bash
+Pick an integer in the interval (0, 127) for a: 2
+Pick an integer in the interval (0, 127) for b: 54
+```
+
+It will then encrypt, add, store and decrypt the resulting ciphertext automatically. 
+You may then verify the result.
 
 ## Unit tests
 To make sure the Simple contract works as expected, the unit tests can be run.

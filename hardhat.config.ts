@@ -9,6 +9,7 @@ import "./tasks/contract"
 import "./tasks/simple"
 import "./tasks/sum"
 import "./tasks/fhecounter"
+import "./tasks/quickStart"
 
 const config: HardhatUserConfig = {
   paths: {
