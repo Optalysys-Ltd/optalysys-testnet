@@ -205,12 +205,6 @@ Do you want to set WALLET_PASSWORD env var to skip the password prompt? (y / n):
 Enter password for wallet: 
 ```
 
-You will then be asked to choose the network on which you would like to deploy your smart contract. 
-
-```bash
-Which testnet network would you like to use? (dev / blue): blue
-```
-
 This will request your current balance for your chosen key in the selected network. After this, it will search in the `contract_addresses` directory for contracts that have already been  deployed.
 
 ```bash 
@@ -229,6 +223,63 @@ Pick an integer in the interval (0, 127) for b: 54
 
 It will then encrypt, add, store and decrypt the resulting ciphertext automatically. 
 You may then verify the result.
+
+### Benchmarking encryptedSum
+
+The hardhat script `benchmarkSum` will run a benchmark for `n` number of encrypted sums with randomly-generated `a + b` values.
+
+Run the script:
+`pnpm hardhat benchmarkSum`
+
+It prompts for the wallet key and reads `Simple.sol`'s contract address or deploys a new instance of it.
+
+It then prompts for the number of times to run `encryptedSum`:
+
+```
+2026-01-05T21:27:48.231Z :: Loading contract address
+The number of times to run encryptedSum (between 1 and 100): 3
+2026-01-05T21:27:50.211Z :: You have entered 3. Generating 3 random integers each for the values of a and b...
+2026-01-05T21:27:50.211Z :: Generated random a+b values:
+[ [ 46, 0 ], [ 118, 114 ], [ 77, 27 ] ]
+```
+
+When the benchmark is running, SIGINT (Ctrl+C) will allow you to prematurely terminate the benchmarking on the next iteration and return the benchmark time up to the last iteration.
+
+```
+2026-01-05T21:23:54.715Z :: Running benchmark...
+2026-01-05T21:23:54.715Z :: Running benchmark iteration 1:
+2026-01-05T21:23:54.715Z :: Encrypting... 
+Please wait for encryption... DONE!
+2026-01-05T21:24:28.735Z :: Input encrypted
+2026-01-05T21:24:28.737Z :: Encrypted input and ZK proof written to: encrypted_inputs.json
+zkProof1: 34.022s
+2026-01-05T21:24:28.738Z :: Connecting wallet
+2026-01-05T21:24:28.740Z :: Connecting to contract
+2026-01-05T21:24:28.744Z :: Calling storeEncryptedSimpleValue on contract
+2026-01-05T21:24:28.998Z :: Transaction hash: 0x8052fc55120f748e5feeec7671914a55dcdb826e4f1c223a04c8599c12b7008b
+2026-01-05T21:24:28.998Z :: Waiting for transaction to be included in block...
+Please wait for transaction... DONE!
+2026-01-05T21:24:37.127Z :: Transaction receipt received. Block number: 365615
+2026-01-05T21:24:37.127Z :: Running benchmark iteration 2:
+2026-01-05T21:24:37.127Z :: Encrypting... 
+Please wait for encryption... ⠋
+2026-01-05T21:24:53.854Z :: benchmarking interrupted, waiting until current iteration completes...
+DONE!
+2026-01-05T21:25:28.740Z :: Input encrypted
+2026-01-05T21:25:28.741Z :: Encrypted input and ZK proof written to: encrypted_inputs.json
+zkProof2: 51.615s
+2026-01-05T21:25:28.743Z :: Connecting wallet
+2026-01-05T21:25:28.745Z :: Connecting to contract
+2026-01-05T21:25:28.747Z :: Calling storeEncryptedSimpleValue on contract
+2026-01-05T21:25:28.995Z :: Transaction hash: 0x6c25db2a5b9ca8725fc04fc24d4e1defca02d192c200479b449aa519ed6defe7
+2026-01-05T21:25:28.995Z :: Waiting for transaction to be included in block...
+Please wait for transaction... DONE!
+2026-01-05T21:25:37.116Z :: Transaction receipt received. Block number: 365625
+2026-01-05T21:25:37.117Z :: benchmarking truncated after 2 times
+2026-01-05T21:25:37.119Z :: Benchmark time for 2 iterations of encryptedSum:
+benchmarkAdd: 1:42.401 (m:ss.mmm)
+```
+
 
 ## Unit tests
 To make sure the Simple contract works as expected, the unit tests can be run.

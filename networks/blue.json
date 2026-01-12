@@ -1,12 +1,12 @@
 {
   "gateway_chain_id": "678259799",
-  "input_verification_contract_address": "0x57E5e6839901B58166dcBeFAEeb2a87aA59d7E2a",
-  "decryption_contract_address": "0x7F09f56703792C69B6d7db899D657C71C8bB8F44",
-  "acl_contract_address": "0x6CB715A3757F3eF540dC7699eef71CDd50229D5B",
-  "fhevm_executor_contract_address": "0x90512d8e8E0f032b0F37D1081056175dce4a5d19",
-  "kms_verifier_contract_address": "0x9920620559Cb1022edaDde18eE7913A7F585D6DD",
-  "decryption_oracle_contract_address": "0x8DB3AdF041cc5c9dD05E3b695eed8058c7A3128c",
-  "input_verifier_contract_address": "0xc6e230317A17f4f131f09c264EA0B10AA6501891",
+  "input_verification_contract_address": "0x9F08368E49F07d4dBDE9F85732a439105f7E65A4",
+  "decryption_contract_address": "0xD4Df47581F89b3AC71051E2CA0d455D95cAeBeDA",
+  "acl_contract_address": "0xFd7eBAE1b1eEc7392C551D6614c6Cd2563e3dC62",
+  "fhevm_executor_contract_address": "0x5F7a4e29F898D74125cc62893485A8336a2833bd",
+  "kms_verifier_contract_address": "0xeD1215e8CF2D99e00bC29B638D0c136882b3ef3d",
+  "decryption_oracle_contract_address": "0xD535B31Ec20d360E71cfca2d2f46973cbE093FAd",
+  "input_verifier_contract_address": "0xFA0C331C5579018F9a8a00D57e494723D345E0Df",
   "json_rpc_url": "https://rpc.gcp-testnet-eth.blue.optalysys.com",
   "relayer_url": "https://relayer.gcp-testnet-eth.blue.optalysys.com"
 }
