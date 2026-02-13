@@ -18,6 +18,12 @@ export type { IFHEVMExecutor } from "./@fhevm/solidity/lib/Impl.sol/IFHEVMExecut
 export { IFHEVMExecutor__factory } from "./factories/@fhevm/solidity/lib/Impl.sol/IFHEVMExecutor__factory";
 export type { IInputVerifier } from "./@fhevm/solidity/lib/Impl.sol/IInputVerifier";
 export { IInputVerifier__factory } from "./factories/@fhevm/solidity/lib/Impl.sol/IInputVerifier__factory";
+export type { ConfidentialSwapPool } from "./contracts/ConfidentialSwapPool.sol/ConfidentialSwapPool";
+export { ConfidentialSwapPool__factory } from "./factories/contracts/ConfidentialSwapPool.sol/ConfidentialSwapPool__factory";
+export type { IConfidentialToken } from "./contracts/ConfidentialSwapPool.sol/IConfidentialToken";
+export { IConfidentialToken__factory } from "./factories/contracts/ConfidentialSwapPool.sol/IConfidentialToken__factory";
+export type { ConfidentialToken } from "./contracts/ConfidentialToken";
+export { ConfidentialToken__factory } from "./factories/contracts/ConfidentialToken__factory";
 export type { FHECounter } from "./contracts/FHECounter";
 export { FHECounter__factory } from "./factories/contracts/FHECounter__factory";
 export type { Test } from "./contracts/Simple.sol/Test";

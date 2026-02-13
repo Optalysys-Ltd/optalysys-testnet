@@ -38,6 +38,18 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IInputVerifier__factory>;
     getContractFactory(
+      name: "ConfidentialSwapPool",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ConfidentialSwapPool__factory>;
+    getContractFactory(
+      name: "IConfidentialToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IConfidentialToken__factory>;
+    getContractFactory(
+      name: "ConfidentialToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ConfidentialToken__factory>;
+    getContractFactory(
       name: "FHECounter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FHECounter__factory>;
@@ -77,6 +89,21 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IInputVerifier>;
     getContractAt(
+      name: "ConfidentialSwapPool",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ConfidentialSwapPool>;
+    getContractAt(
+      name: "IConfidentialToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IConfidentialToken>;
+    getContractAt(
+      name: "ConfidentialToken",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ConfidentialToken>;
+    getContractAt(
       name: "FHECounter",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -112,6 +139,18 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IInputVerifier>;
     deployContract(
+      name: "ConfidentialSwapPool",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfidentialSwapPool>;
+    deployContract(
+      name: "IConfidentialToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IConfidentialToken>;
+    deployContract(
+      name: "ConfidentialToken",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfidentialToken>;
+    deployContract(
       name: "FHECounter",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FHECounter>;
@@ -150,6 +189,21 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IInputVerifier>;
+    deployContract(
+      name: "ConfidentialSwapPool",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfidentialSwapPool>;
+    deployContract(
+      name: "IConfidentialToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IConfidentialToken>;
+    deployContract(
+      name: "ConfidentialToken",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ConfidentialToken>;
     deployContract(
       name: "FHECounter",
       args: any[],
