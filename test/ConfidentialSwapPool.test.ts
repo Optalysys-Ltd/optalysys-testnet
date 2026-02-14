@@ -1,4 +1,4 @@
-import { ConfidentialSwapPool, ConfidentialSwapPool__factory, ConfidentialToken__factory } from "../typechain-types";
+import { ConfidentialSwapPool, ConfidentialSwapPool__factory, ConfidentialToken, ConfidentialToken__factory } from "../typechain-types";
 import { FhevmType, HardhatFhevmRuntimeEnvironment } from "@fhevm/hardhat-plugin";
 import { expect } from "chai";
 import { ethers, fhevm as mockFhevm } from "hardhat";
@@ -102,7 +102,7 @@ async function deployFixture() {
 
 
 
-    return { confidentialSwapPoolContract, confidentialSwapPoolAddress, wallet, walletAddress, fhevm, provider };
+    return { confidentialSwapPoolContract, confidentialSwapPoolAddress, wallet, walletAddress, fhevm, provider, confidentialToken1, confidentialToken2, wallet0, wallet1 };
 }
 
 describe("ConfidentialSwapPool", function () {
@@ -112,9 +112,13 @@ describe("ConfidentialSwapPool", function () {
     let fhevm: FhevmInstance | HardhatFhevmRuntimeEnvironment;
     let walletAddress: string;
     let provider: JsonRpcProvider;
+    let confidentialToken1: ConfidentialToken;
+    let confidentialToken2: ConfidentialToken;
+    let wallet0: HDNodeWallet;
+    let wallet1: HDNodeWallet;
 
     before(async () => {
-        ({ confidentialSwapPoolContract, confidentialSwapPoolAddress, wallet, walletAddress, fhevm, provider } = await deployFixture());
+        ({ confidentialSwapPoolContract, confidentialSwapPoolAddress, wallet, walletAddress, fhevm, provider, confidentialToken1, confidentialToken2, wallet0, wallet1 } = await deployFixture());
     });
 
     it("perform a swap", async function () {
@@ -134,19 +138,34 @@ describe("ConfidentialSwapPool", function () {
             .connect(wallet)
             .swap(encryptedInputs.handles[0], encryptedInputs.handles[1], encryptedInputs.inputProof, ROUNDS);
         const receipt = await tx.wait();
+        const fromBlock = 0;
+        const toBlock = receipt?.blockNumber || 0;
+
+
+        const token0Filter = confidentialToken1.filters.Transfer();
+        const token1Filter = confidentialToken2.filters.Transfer();
+
+        const token0Events = await confidentialToken1.queryFilter(token0Filter, fromBlock, toBlock);
+        const token1Events = await confidentialToken2.queryFilter(token1Filter, fromBlock, toBlock);
+
+        token0Events.forEach((event) => {
+            console.log(`ConfidentialToken1 TransferFromEncrypted - Block Number: ${event.blockNumber}, From: ${event.args[0]}, To: ${event.args[1]}, AmountHandle: ${event.args[2]}`);
+        });
+
+        token1Events.forEach((event) => {
+            console.log(`ConfidentialToken2 TransferFromEncrypted - Block Number: ${event.blockNumber}, From: ${event.args[0]}, To: ${event.args[1]}, AmountHandle: ${event.args[2]}`);
+        });
 
         const filter = confidentialSwapPoolContract.filters.SwapExecuted();
         // Or filter by specific indexed parameters (e.g., 'to' address)
         // const filter = contract.filters.Transfer(null, "RECIPIENT_ADDRESS");
 
-        const fromBlock = 0;
-        const toBlock = receipt?.blockNumber || 0;
 
         // 3. Query the events
         const events = await confidentialSwapPoolContract.queryFilter(filter, fromBlock, toBlock);
 
         // 4. Process the events
-        events.forEach((event) => {
+        events.forEach(async (event) => {
             console.log(`Block Number: ${event.blockNumber}`);
             console.log(`Sender: ${event.args[0]}, Out0handle: ${event.args[1]}, Out1handle: ${event.args[2]} receiptHandle: ${event.args[3]}`);
             const out0Handle = event.args[1];
@@ -156,7 +175,7 @@ describe("ConfidentialSwapPool", function () {
             if (fhevm.isMock) {
                 // Decrypt outputs
                 fhevm = fhevm as HardhatFhevmRuntimeEnvironment;
-                (async () => {
+                const decryptSwap = async () => {
                     const out0Decrypted = await fhevm.userDecryptEuint(
                         FhevmType.euint8,
                         out0Handle,
@@ -179,8 +198,10 @@ describe("ConfidentialSwapPool", function () {
                     console.log(`Decrypted out0: ${out0Decrypted}, Decrypted out1: ${out1Decrypted}, Decrypted receipt: ${receiptDecrypted}`);
                     expect(out0Decrypted).to.eq(clearB - FEE);
                     expect(out1Decrypted).to.eq(clearA - FEE);
-                })();
+                };
+                await decryptSwap();
             }
         });
+
     });
 });
