@@ -15,7 +15,7 @@ async function deployFixture() {
     let walletAddress: string;
     let fhevm: FhevmInstance | HardhatFhevmRuntimeEnvironment;
     timestampLog("Network name: " + networkName);
-    const configFile = networkName == "optalysys" ? "testnet_config.json" : "mocked_config.json";
+    const configFile = networkName == "optalysys" ? "networks/blue.json" : "mocked_config.json";
     if (networkName == "optalysys") {
         timestampLog("Loading wallet")
         wallet = await loadWallet(keyFile) as HDNodeWallet;
