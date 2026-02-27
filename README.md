@@ -79,7 +79,7 @@ pnpm hardhat task:accountImport --key-file key.json
 ### Check your wallet ETH balance on the testnet
 
 ```bash
-pnpm hardhat task:getBalance --key-file key.json --config-file testnet_config.json 
+pnpm hardhat task:getBalance --key-file key.json --config-file networks/blue.json 
 2025-10-24T14:03:35.875Z :: Loading wallet
 Set WALLET_PASSWORD env var to skip this prompt
 Enter password for wallet: 
@@ -110,7 +110,7 @@ The hardhat tasks (prefixed by `task:`) are defined in the folder `tasks/`. The 
 This deploys a simple contract to the testnet using the account and config you created in the previous steps. The contract is in the file `contracts/Simple.sol`. It demonstrates encrypting a uint8, and two uint8s, and public decryption. The deployed contract address is written to the file `test_contract.address`.
 
 ```bash
-pnpm hardhat task:deployTest --config-file testnet_config.json --address-file test_contract.address --key-file key.json
+pnpm hardhat task:deployTest --config-file networks/blue.json --address-file test_contract.address --key-file key.json
 ```
 
 ### Store an Encrypted Value on the Contract then Request Its Decryption
@@ -122,7 +122,7 @@ As a first test we will encrypt an unsigned 8-bit integer, store it on the contr
 This will fetch the URLs of the public keys from the relayer, then fetch the public keys from those URLs, use the public key to encrypt the input and then generate a zero-knowledge proof that we know the plaintext value for this ciphertext. The ciphertext and zkproof will be stored in a file `encrypted_input.json` so we can use them in following steps.
 
 ```bash
-pnpm hardhat task:encryptUint8 --input 7 --input-file encrypted_input.json --config-file testnet_config.json --address-file test_contract.address --key-file key.json
+pnpm hardhat task:encryptUint8 --input 7 --input-file encrypted_input.json --config-file networks/blue.json --address-file test_contract.address --key-file key.json
 ```
 
 #### Store Encrypted Value on Contract
@@ -130,7 +130,7 @@ pnpm hardhat task:encryptUint8 --input 7 --input-file encrypted_input.json --con
 Now that the coprocessors know about the ciphertext (from the previous action) and have returned an attestation of the zkproof, we can store the ciphertext (actually a "handle" that the coprocessors know references that ciphertext) from `encrypted_input.json` on our contract on the blockchain.
 
 ```bash
-pnpm hardhat task:storeEncryptedUint8 --input-file encrypted_input.json --config-file testnet_config.json --address-file test_contract.address --key-file key.json
+pnpm hardhat task:storeEncryptedUint8 --input-file encrypted_input.json --config-file networks/blue.json --address-file test_contract.address --key-file key.json
 ```
 
 #### Request Public Decryption
@@ -140,7 +140,7 @@ Now that a reference to the ciphertext is stored on the blockchain, ACLs have be
 > The output should match the input provided in the earlier step when encrypting.
 
 ```bash
-pnpm hardhat task:publicDecryptionOfSimpleUint8 --config-file testnet_config.json --address-file test_contract.address
+pnpm hardhat task:publicDecryptionOfSimpleUint8 --config-file networks/blue.json --address-file test_contract.address
 ```
 
 ### Perform FHE Compute on the Blockchain and Request Result's Decryption
@@ -154,7 +154,7 @@ Now we will perform FHE compute on the blockchain.
 The first step is the same as before, but since we will be sending 2 encrypted values (inputs to sum under FHE) we need to encrypt them both. Fortunately generating the zkproof and getting the attestation takes a similar time as they can be submitted in a bundle together. The encrypted inputs are written to the file `encrypted_sum_inputs.json`.
 
 ```bash
-pnpm hardhat task:encryptSumInputs --input1 3 --input2 5 --input-file encrypted_sum_inputs.json --config-file testnet_config.json --address-file test_contract.address --key-file key.json
+pnpm hardhat task:encryptSumInputs --input1 3 --input2 5 --input-file encrypted_sum_inputs.json --config-file networks/blue.json --address-file test_contract.address --key-file key.json
 ```
 
 #### Request Encrypted Sum to be Stored on Contract
@@ -164,7 +164,7 @@ Now that the coprocessors know about the ciphertexts (from the previous action) 
 On-chain the compute is done symbolically, and from the input handles and operations a new handle is deterministically calculated. The core FHE contracts that our contract uses then emit an event for each FHE operation which is seen by the coprocessors. The coprocessors then perform the actual FHE compute, making the result ciphertexts available for further calculation/decryption.
 
 ```bash
-pnpm hardhat task:requestEncryptedSum --input-file encrypted_sum_inputs.json --config-file testnet_config.json --address-file test_contract.address --key-file key.json
+pnpm hardhat task:requestEncryptedSum --input-file encrypted_sum_inputs.json --config-file networks/blue.json --address-file test_contract.address --key-file key.json
 ```
 
 #### Request Public Decryption
@@ -176,7 +176,7 @@ Now that a reference to the resultant (sum) ciphertext is stored on the blockcha
 > The output should match the sum of the inputs provided in the earlier step when encrypting.
 
 ```bash
-pnpm hardhat task:publicDecryptionOfSum --config-file testnet_config.json --address-file test_contract.address
+pnpm hardhat task:publicDecryptionOfSum --config-file networks/blue.json --address-file test_contract.address
 ```
 
 ## The `quickStart` task: a  simple way to interact with Optalysys testnets
@@ -455,7 +455,7 @@ Take a look at [tasks/fhecounter.ts](tasks/fhecounter.ts) which have been writte
 First deploy the contract
 
 ```bash
-pnpm hardhat task:deployFheCounter --config-file testnet_config.json --address-file fhe_counter.address --key-file key.json 
+pnpm hardhat task:deployFheCounter --config-file networks/blue.json --address-file fhe_counter.address --key-file key.json 
 2025-10-28T14:25:31.413Z :: Loading wallet
 Set WALLET_PASSWORD env var to skip this prompt
 Enter password for wallet: 
@@ -471,7 +471,7 @@ Enter password for wallet:
 Encrypt the value to increment the counter by (here it's set to 4) and save it to `--input-file`
 
 ```bash
-pnpm hardhat task:incrementFheCounter --input 4 --input-file inputs.json --config-file testnet_config.json --address-file fhe_counter.address --key-file key.json 
+pnpm hardhat task:incrementFheCounter --input 4 --input-file inputs.json --config-file networks/blue.json --address-file fhe_counter.address --key-file key.json 
 2025-10-28T14:27:44.527Z :: Loading wallet
 Set WALLET_PASSWORD env var to skip this prompt
 Enter password for wallet: 
@@ -496,7 +496,7 @@ Enter password for wallet:
 Call the contract's `increment` call with the encrypted input and ZK proof created in the previous step:
 
 ```bash
-pnpm hardhat task:callIncrementFheCounter --input-file inputs.json --config-file testnet_config.json --address-file fhe_counter.address --key-file key.json 
+pnpm hardhat task:callIncrementFheCounter --input-file inputs.json --config-file networks/blue.json --address-file fhe_counter.address --key-file key.json 
 2025-10-28T14:29:07.007Z :: Loading wallet
 Set WALLET_PASSWORD env var to skip this prompt
 Enter password for wallet: 
@@ -514,7 +514,7 @@ Enter password for wallet:
 Decrypt the counter. Note that the value of the counter has incremented by the value you have set.
 
 ```bash
-pnpm hardhat task:decryptFheCounter --config-file testnet_config.json --address-file fhe_counter.address --key-file key.json 
+pnpm hardhat task:decryptFheCounter --config-file networks/blue.json --address-file fhe_counter.address --key-file key.json 
 2025-10-28T14:29:26.212Z :: Loading wallet
 Set WALLET_PASSWORD env var to skip this prompt
 Enter password for wallet: 
